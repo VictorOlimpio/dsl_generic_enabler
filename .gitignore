@@ -123,3 +123,4 @@ files/
 .DS_Store
 .env
 .data
+*.pkl
