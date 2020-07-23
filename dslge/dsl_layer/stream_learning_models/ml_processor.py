@@ -1,4 +1,4 @@
-from dsl_layer.models import Measures
+from dsl_layer.models import Measure
 from skmultiflow.data import DataStream
 from skmultiflow.evaluation import EvaluatePrequential
 from dsl_layer.utils.constants import DOC_DIR
