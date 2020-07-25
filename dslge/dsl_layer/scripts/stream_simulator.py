@@ -10,7 +10,7 @@ def run():
     measures = Measure.objects.all()
     if not measures.count() == 0:
         Measure.objects.all().delete()
-    seed(2)
+    seed(1)
     for index, row in df.iterrows():
         measure_builder = MeasureBuilder(row)
         measure_builder.save()
