@@ -21,6 +21,7 @@ class MLProcessor:
         # Validating params
         if self._validate_evaluate_params:
             evaluator = EvaluatePrequential(max_samples=self.params['max_samples'],
+                                            pretrain_size=self.params['pretrain_size'],
                                             output_file=DOC_DIR +
                                             self.params['output_file'],
                                             show_plot=self.params['show_plot'],
