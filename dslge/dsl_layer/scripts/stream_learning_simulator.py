@@ -10,56 +10,67 @@ from skmultiflow.data import DataStream
 import pandas as pd
 from django.forms import model_to_dict
 import numpy as np
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
 
 
 def run(*args):
-    n_samples = np.int(args[0])
+    # n_samples = np.int(args[0])
     Measure.objects.all().delete()
     # 1. Instantiate the HoeffdingTreeClassifier
     ht = HoeffdingTreeRegressor()
-    # 2. Setup the evaluator
-    evaluator = EvaluatePrequential(show_plot=True,
-                                    n_wait=1,
-                                    pretrain_size=92,
-                                    max_samples=50000,
-                                    restart_stream=False,
-                                    output_file=DOC_DIR + 'results.csv',
-                                    metrics=['mean_square_error', 'mean_absolute_error'])
-    count = 0
-    # 3. Buffering 94 samples to pre-train on 92, evaluate on 1 and get the next sample
-    # while(count <= 94):
-    #     df = read_frame(Measure.objects.all())
-    #     count = len(df)
-    # next_sample = df.tail(1)
-    # df = df[:93] 
-    while(count <= n_samples):
+    n_samples = 0
+    # Buffering 93 samples to pre-train on 92 and get the next sample
+    while(n_samples <= 93):
         df = read_frame(Measure.objects.all())
-        count = len(df)
+        n_samples = len(df)
+    next_sample = df.tail(1)
+    df = df[:92]
     df_data = df[['measure_one', 'measure_two', 'measure_three',
-                'measure_four', 'weekday', 'weekend', 'season']]
+                  'measure_four', 'weekday', 'weekend', 'season']]
     df_target = df[['predicted_value']]
     stream = DataStream(data=df_data, y=df_target)
-    evaluator.evaluate(stream, model=ht)
-    # df = df.append(next_sample) # Append the next sample to be evaluated
-    # 4. Run evaluation
-    # while(not next_sample.empty):
-    #     df = next_sample
-    #     df_data = df[['measure_one', 'measure_two', 'measure_three',
-    #                 'measure_four', 'weekday', 'weekend', 'season']]
-    #     df_target = df[['predicted_value']]
-    #     stream = DataStream(data=df_data, y=df_target)
-    #     # import ipdb; ipdb.set_trace()
-    #     # X = df_data.to_numpy()
-    #     # evaluator.predict(X=X)
-    #     # evaluator.partial_fit(X=X, y=df_target.to_numpy())
-    #     # evaluator = evaluator.evaluation_summary()
-    #     evaluator.evaluate(stream, model=ht)
-    #     current_sample = Measure.objects.get(id=df.iloc[-1]['id'])
-    #     next_sample = pd.DataFrame(columns=df.columns)
-    #     # Loading the next sample
-    #     while(next_sample.empty):
-    #         try:
-    #             next_sample = pd.DataFrame([model_to_dict(current_sample.get_next_by_created_at())])
-    #         except Exception as error:
-    #             continue
-    #     # df = df.append(next_sample)
+    # Pre-training
+    pre_train_size = len(df)
+    X, y = stream.next_sample()
+    ht.partial_fit(X, y)
+    # Preparing to evaluate
+    max_samples = 50000
+    
+    y_pred, y_true = np.zeros(max_samples), np.zeros(max_samples)
+    stream = prepare_stream(next_sample)
+    # Evaluate
+    while(n_samples < max_samples and stream.has_more_samples()):
+        X, y = stream.next_sample()
+        y_true[n_samples] = y[0]
+        y_pred[n_samples] = ht.predict(X)[0]
+        ht.partial_fit(X, y)
+        # Loading the next sample
+        current_sample = Measure.objects.get(id=df.iloc[-1]['id'])
+        next_sample = pd.DataFrame(columns=df.columns)
+        while(next_sample.empty):
+            try:
+                next_sample = pd.DataFrame(
+                    [model_to_dict(current_sample.get_next_by_created_at())])
+            except Exception as error:
+                continue
+        # Preparing the next evaluation
+        stream = prepare_stream(next_sample)
+        result_summary(n_samples, pre_train_size, y_true, y_pred)
+        n_samples = n_samples + 1
+        # df = df.append(next_sample)
+
+def prepare_stream(sample):
+    df = sample
+    df_data = df[['measure_one', 'measure_two', 'measure_three',
+                  'measure_four', 'weekday', 'weekend', 'season']]
+    df_target = df[['predicted_value']]
+    return DataStream(data=df_data, y=df_target)
+
+def result_summary(n_samples, pre_train_size, y_true, y_pred):
+    print('{} samples analyzed.'.format(n_samples))
+    print('Pre trained on {} samples.'.format(pre_train_size))
+    print('Hoeffding Tree regressor MAE: {}'.
+            format(mean_absolute_error(y_true, y_pred)))
+    print('Hoeffding Tree regressor MSE: {}'.
+            format(mean_squared_error(y_true, y_pred)))
