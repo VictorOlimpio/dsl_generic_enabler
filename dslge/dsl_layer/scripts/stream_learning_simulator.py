@@ -3,6 +3,7 @@ from dsl_layer.utils.constants import DOC_DIR
 from dsl_layer.models import Measure
 from dsl_layer.stream_learning_models.ml_processor import MLProcessor
 from skmultiflow.trees import HoeffdingTreeRegressor
+from skmultiflow.lazy import KNNRegressor
 from django_pandas.io import read_frame
 from dsl_layer.utils.load_tables import load_df_from_table
 from skmultiflow.evaluation import EvaluatePrequential
@@ -19,8 +20,8 @@ def run(*args):
     Measure.objects.all().delete()
     # 1. Instantiate the HoeffdingTreeClassifier
     ht = HoeffdingTreeRegressor()
-
-    evaluate(ht, max_samples)
+    knn = KNNRegressor()
+    evaluate(knn, max_samples)
 
 
 def evaluate(model, max_samples):
@@ -43,8 +44,7 @@ def evaluate(model, max_samples):
     y_pred, y_true = np.zeros(max_samples), np.zeros(max_samples)
     df = next_sample
     stream = prepare_stream(df)
-    mean_mae = []
-    mean_mse = []
+    mean_mae, mean_mse = [], []
     result = pd.DataFrame(
         columns=['total_samples', 'pre_trained_samples', 'current_mae', 'current_mse', 'mean_mae', 'mean_mse'])
     # Evaluate
