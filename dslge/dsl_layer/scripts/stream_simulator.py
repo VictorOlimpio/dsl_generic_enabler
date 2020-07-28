@@ -6,10 +6,9 @@ from random import random
 import time
 
 def run():
+    Measure.objects.all().delete()
     df = load_df_from_table('medidas')
     measures = Measure.objects.all()
-    if not measures.count() == 0:
-        Measure.objects.all().delete()
     seed(1)
     for index, row in df.iterrows():
         measure_builder = MeasureBuilder(row)

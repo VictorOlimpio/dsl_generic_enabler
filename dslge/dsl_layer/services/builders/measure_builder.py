@@ -15,14 +15,14 @@ class MeasureBuilder:
             self.errors = str(error)
 
     def _build_instance(self, response):
-        measure_one = response['medidaUm']
-        measure_two = response['medidaDois']
-        measure_three = response['medidaTres']
-        measure_four = response['medidaQuatro']
-        predicted_value = response['target']
-        weekday = response['diaDeSemana']
-        weekend = response['fimDeSemana']
-        season = response['estacaoDoAno']
+        measure_one = response['medida_um']
+        measure_two = response['medida_dois']
+        measure_three = response['medida_tres']
+        measure_four = response['medida_quatro']
+        predicted_value = response['valor_predito']
+        weekday = response['dia_de_semana']
+        weekend = response['fim_de_semana']
+        season = response['estacao_do_ano']
         return Measure(measure_one=measure_one,
                        measure_two=measure_two,
                        measure_three=measure_three,
