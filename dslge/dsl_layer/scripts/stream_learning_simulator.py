@@ -43,8 +43,10 @@ def evaluate(model, max_samples):
     y_pred, y_true = np.zeros(max_samples), np.zeros(max_samples)
     df = next_sample
     stream = prepare_stream(df)
+    mean_mae = []
+    mean_mse = []
     result = pd.DataFrame(
-        columns=['total_samples', 'pre_trained_samples', 'MAE', 'MSE'])
+        columns=['total_samples', 'pre_trained_samples', 'current_mae', 'current_mse', 'mean_mae', 'mean_mse'])
     # Evaluate
     while(n_samples < max_samples and stream.has_more_samples()):
         X, y = stream.next_sample()
@@ -65,13 +67,15 @@ def evaluate(model, max_samples):
         stream = prepare_stream(df)
         mae = mean_absolute_error(y_true, y_pred)
         mse = mean_squared_error(y_true, y_pred)
+        mean_mae.append(mae)
+        mean_mse.append(mse)
         result_summary(n_samples, pre_train_size, mae, mse)
         result_dict = {'total_samples': n_samples,
-                       'pre_trained_samples': pre_train_size, 'MAE': mae, 'MSE': mse}
+                       'pre_trained_samples': pre_train_size, 'current_mae': mae,
+                       'current_mse': mse, 'mean_mae': np.mean(mean_mae), 'mean_mse': np.mean(mean_mse)}
         result = result.append(result_dict, ignore_index=True)
         n_samples += 1
-    result.plot(x ='total_samples', y='MAE', kind = 'line')
-    result.plot(x ='total_samples', y='MSE', kind = 'line')
+    result.plot(subplots=True, x='total_samples',y=['mean_mae', 'current_mae', 'mean_mse', 'current_mse'], kind='line')
     plt.show()
 
 
@@ -89,4 +93,3 @@ def result_summary(n_samples, pre_train_size, mae, mse):
           format(mae))
     print('Hoeffding Tree regressor MSE: {}'.
           format(mse))
-
