@@ -13,6 +13,7 @@ from django.forms import model_to_dict
 import numpy as np
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 
 def run(*args):
@@ -21,10 +22,11 @@ def run(*args):
     # 1. Instantiate the HoeffdingTreeClassifier
     ht = HoeffdingTreeRegressor()
     knn = KNNRegressor()
-    evaluate(knn, max_samples)
+    evaluate(ht, max_samples, 'resultado_ht.csv')
+    # evaluate(ht, max_samples, 'resultado_ht.csv')
 
 
-def evaluate(model, max_samples):
+def evaluate(model, max_samples, file_name):
     n_samples = 0
     # Buffering 93 samples to pre-train on 92 and get the next sample
     while(n_samples <= 93):
@@ -41,18 +43,23 @@ def evaluate(model, max_samples):
     X, y = stream.next_sample(pre_train_size)
     model.partial_fit(X, y)
     # Preparing to evaluate
-    y_pred, y_true = np.zeros(max_samples), np.zeros(max_samples)
+    y_pred, y_true = [], []
     df = next_sample
     stream = prepare_stream(df)
     mean_mae, mean_mse = [], []
     result = pd.DataFrame(
-        columns=['total_samples', 'pre_trained_samples', 'current_mae', 'current_mse', 'mean_mae', 'mean_mse'])
+        columns=['total_samples', 'pre_trained_samples', 'current_mae',
+                 'current_mse', 'mean_mae', 'mean_mse', 'total_time'])
+    total_time = 0
     # Evaluate
     while(n_samples < max_samples and stream.has_more_samples()):
         X, y = stream.next_sample()
-        y_true[n_samples] = y[0]
-        y_pred[n_samples] = model.predict(X)[0]
+        y_true.append(y[0])
+        now = datetime.now()
+        y_pred.append(model.predict(X)[0])
         model.partial_fit(X, y)
+        later = datetime.now()
+        time_processed = (later - now).total_seconds()
         # Loading the next sample
         current_sample = Measure.objects.get(id=df.iloc[-1]['id'])
         next_sample = pd.DataFrame(columns=df.columns)
@@ -69,13 +76,16 @@ def evaluate(model, max_samples):
         mse = mean_squared_error(y_true, y_pred)
         mean_mae.append(mae)
         mean_mse.append(mse)
-        result_summary(n_samples, pre_train_size, mae, mse)
+        result_summary(n_samples, pre_train_size, mae, mse, time_processed)
         result_dict = {'total_samples': n_samples,
                        'pre_trained_samples': pre_train_size, 'current_mae': mae,
-                       'current_mse': mse, 'mean_mae': np.mean(mean_mae), 'mean_mse': np.mean(mean_mse)}
+                       'current_mse': mse, 'mean_mae': np.mean(mean_mae),
+                       'mean_mse': np.mean(mean_mse), 'total_time': time_processed}
         result = result.append(result_dict, ignore_index=True)
         n_samples += 1
-    result.plot(subplots=True, x='total_samples',y=['mean_mae', 'current_mae', 'mean_mse', 'current_mse'], kind='line')
+    result.to_csv(DOC_DIR + file_name, sep=';', float_format='%.3f')
+    result.plot(subplots=True, x='total_samples', y=[
+                'mean_mae', 'current_mae', 'mean_mse', 'current_mse'], kind='line')
     plt.show()
 
 
@@ -86,10 +96,9 @@ def prepare_stream(sample):
     return DataStream(data=df_data, y=df_target)
 
 
-def result_summary(n_samples, pre_train_size, mae, mse):
+def result_summary(n_samples, pre_train_size, mae, mse, total_time):
     print('{} samples analyzed.'.format(n_samples))
     print('Pre trained on {} samples.'.format(pre_train_size))
-    print('Hoeffding Tree regressor MAE: {}'.
-          format(mae))
-    print('Hoeffding Tree regressor MSE: {}'.
-          format(mse))
+    print('MAE: {}'.format(mae))
+    print('MSE: {}'.format(mse))
+    print('Time processed: {}'.format(total_time))
