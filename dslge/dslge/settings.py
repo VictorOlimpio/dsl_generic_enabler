@@ -76,18 +76,28 @@ WSGI_APPLICATION = 'dslge.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.mysql',
+#             'HOST':  '127.0.0.1',
+#             'NAME':  'test',
+#             'USER':  'root',
+#             'PASSWORD':  'root',
+#             'PORT':  '3306',
+#             'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", },
+#             'TEST': {
+#                 'NAME': 'test',
+#             },
+#         }
+#     }
 DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'HOST':  '127.0.0.1',
-            'NAME':  'test',
-            'USER':  'root',
-            'PASSWORD':  'root',
-            'PORT':  '3306',
-            'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'", },
-            'TEST': {
-                'NAME': 'test',
-            },
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'test',
+        'host': 'localhost',
+        'port': 27017,
+        # 'username': 'user_name',
+        # 'password': 'password',
         }
     }
 
