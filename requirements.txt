@@ -18,3 +18,4 @@ tqdm
 django-extensions
 Cython
 scikit-multiflow
+djongo
