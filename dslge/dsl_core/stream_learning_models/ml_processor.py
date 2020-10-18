@@ -1,7 +1,7 @@
-from dsl_layer.models import Measure
+from dsl_core.models import Measure
 from skmultiflow.data import DataStream
 from skmultiflow.evaluation import EvaluatePrequential
-from dsl_layer.utils.constants import DOC_DIR
+from dsl_core.utils.constants import DOC_DIR
 
 
 class MLProcessor:

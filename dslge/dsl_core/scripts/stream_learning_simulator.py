@@ -1,11 +1,11 @@
 
-from dsl_layer.utils.constants import DOC_DIR
-from dsl_layer.models import Measure
-from dsl_layer.stream_learning_models.ml_processor import MLProcessor
+from dsl_core.utils.constants import DOC_DIR
+from dsl_core.models import Measure
+from dsl_core.stream_learning_models.ml_processor import MLProcessor
 from skmultiflow.trees import HoeffdingTreeRegressor
 from skmultiflow.lazy import KNNRegressor
 from django_pandas.io import read_frame
-from dsl_layer.utils.load_tables import load_df_from_table
+from dsl_core.utils.load_tables import load_df_from_table
 from skmultiflow.evaluation import EvaluatePrequential
 from skmultiflow.data import DataStream
 import pandas as pd

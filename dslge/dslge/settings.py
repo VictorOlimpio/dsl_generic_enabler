@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'dsl_layer.apps.DslLayerConfig',
-    'comunication_layer.apps.ComunicationLayerConfig',
+    'dsl_core.apps.DslLayerConfig',
+    'dsl_broker.apps.ComunicationLayerConfig',
 ]
 
 MIDDLEWARE = [

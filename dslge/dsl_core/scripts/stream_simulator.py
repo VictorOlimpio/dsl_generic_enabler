@@ -1,6 +1,6 @@
-from dsl_layer.utils.load_tables import load_df_from_table
-from dsl_layer.services.builders.measure_builder import MeasureBuilder
-from dsl_layer.models import Measure
+from dsl_core.utils.load_tables import load_df_from_table
+from dsl_core.services.builders.measure_builder import MeasureBuilder
+from dsl_core.models import Measure
 from random import seed
 from random import random
 import time

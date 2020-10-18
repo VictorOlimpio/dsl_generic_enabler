@@ -1,5 +1,5 @@
 from rest_framework import routers
-from comunication_layer.views import health
+from dsl_broker.views import health
 from django.conf.urls import url, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from django.urls import path

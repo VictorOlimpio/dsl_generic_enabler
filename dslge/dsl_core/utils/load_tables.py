@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import io
-from dsl_layer.utils.constants import DOC_DIR
+from dsl_core.utils.constants import DOC_DIR
 
 def _file_serialize(filename, fieldnames=None, file_type='csv', sep=',', encoding='utf-8'):
     df = pd.DataFrame()

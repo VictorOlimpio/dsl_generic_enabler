@@ -1,4 +1,4 @@
-from dsl_layer.models import Measure
+from dsl_core.models import Measure
 
 
 class MeasureBuilder:

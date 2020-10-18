@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 
 DOC_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
-    os.path.abspath(__file__)))) + '/dsl_layer/datasets/'
+    os.path.abspath(__file__)))) + '/dsl_core/datasets/'
 
 fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(8, 8))
 
