@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class DslCore(AppConfig):
+class DslCoreConfig(AppConfig):
     name = 'dsl_core'
