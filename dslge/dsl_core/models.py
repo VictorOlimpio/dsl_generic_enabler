@@ -1,4 +1,4 @@
-from django.db import models
+from djongo import models
 
 # Create your models here.
 class Measure(models.Model):
@@ -12,5 +12,3 @@ class Measure(models.Model):
     season = models.FloatField(null=True, db_column= 'season')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    class Meta:
-        db_table = 'measures'

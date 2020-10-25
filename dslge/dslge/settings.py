@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'dslge.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'test',
+        'NAME': 'dslge_db',
         'host': 'localhost',
         'port': 27017,
         # 'username': 'user_name',
