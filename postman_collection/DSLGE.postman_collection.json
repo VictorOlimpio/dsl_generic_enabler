@@ -1,0 +1,69 @@
+{
+	"info": {
+		"_postman_id": "a597e802-fc2a-4235-bc11-7db59cda69ef",
+		"name": "DSLGE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "health",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"urn:ngsi-ld:Store:001\",\n    \"type\": \"Store\",\n    \"address\": {\n        \"type\": \"PostalAddress\",\n        \"value\": {\n            \"streetAddress\": \"Bornholmer Straße 65\",\n            \"addressRegion\": \"Berlin\",\n            \"addressLocality\": \"Prenzlauer Berg\",\n            \"postalCode\": \"10439\"\n        },\n        \"metadata\": {\n    \t\t\"verified\": {\n        \t\t\"value\": true,\n        \t\t\"type\": \"Boolean\"\n    \t\t}\n    \t}\n    },\n    \"location\": {\n        \"type\": \"geo:json\",\n        \"value\": {\n             \"type\": \"Point\",\n             \"coordinates\": [13.3986, 52.5547]\n        }\n    },\n    \"name\": {\n        \"type\": \"Text\",\n        \"value\": \"Bösebrücke Einkauf\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/health/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"health",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "configure",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"urn:ngsi-ld:Store:001\",\n    \"type\": \"EntityModel\",\n    \"model\": {\n        \"type\": \"Model\",\n        \"value\": {\n            \"modelName\": \"knn\",\n            \"windowSize\": \"5\",\n            \"preTrainSize\": \"95\",\n            \"nSamples\": \"100\"\n        },\n        \"metadata\": {\n    \t\t\"verified\": {\n        \t\t\"value\": true,\n        \t\t\"type\": \"Boolean\"\n    \t\t}\n    \t}\n    }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/configure/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"configure",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
