@@ -1,0 +1,35 @@
+Start when Orion Broker send a notification
+n_data = 0
+sample = []
+pre_train_samples = []
+n_pre_train = 0
+model = model loeaded from database
+
+While Orion Broker sends a notification:
+	data = measure from notification
+	insert data in sample
+	n_data = n_data + 1
+
+	if n_data > window then: 
+		if model is not pre trained then:
+            insert sample in pre_train_samples
+            n_pre_train = n_pre_train + 1
+            
+            if n_pre_train > pre_train_size then:
+                model.pre_train(pre_train_samples) //Pre train the model with the pre_train_samples
+                Update the model in database
+        else:
+            evaluate model in prequential way with the sample
+            n_samples_evaluated = n_samples_evaluated + 1
+            
+            //Updates the model when a specified number of samples evaluated by the model is reached
+            if n_samples_evaluated > n_samples_to_save then:
+                update the model in database
+                n_samples_evaluated = 0
+            
+            save predicted value in database
+
+		n_data = 0
+		sample = []
+		
+	

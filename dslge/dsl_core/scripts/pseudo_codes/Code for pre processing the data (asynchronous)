@@ -1,0 +1,15 @@
+Start when Orion Broker send a notification
+n_data = 0
+sample = []
+
+While Orion Broker sends a notification:
+	data = measure from notification
+	insert data in sample
+	n_data = n_data + 1
+
+	if n_data > window then: 
+		save the sample in database		
+		n_data = 0
+		sample = []
+
+	
