@@ -17,6 +17,7 @@ While Orion Broker sends a notification:
             
             if n_pre_train > pre_train_size then:
                 model.pre_train(pre_train_samples) //Pre train the model with the pre_train_samples
+                model.pre_trained = true
                 Update the model in database
         else:
             evaluate model in prequential way with the sample
