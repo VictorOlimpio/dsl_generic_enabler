@@ -1,11 +1,11 @@
-Start when Orion Broker send a notification
+Start when Orion Broker send a notification and the notification is saved in database
 n_data = 0
 sample = []
 pre_train_samples = []
 n_pre_train = 0
 model = model loeaded from database
 
-While Orion Broker sends a notification:
+While there is a notification of the model in database:
 	data = measure from notification
 	insert data in sample
 	n_data = n_data + 1
