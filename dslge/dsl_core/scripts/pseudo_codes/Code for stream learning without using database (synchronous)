@@ -10,7 +10,7 @@ While there is a notification of the model in database:
 	insert data in sample
 	n_data = n_data + 1
 
-	if n_data == window then: 
+    if n_data == window then: 
         if model is not pre trained then:
             insert sample in pre_train_samples
             n_pre_train = n_pre_train + 1
