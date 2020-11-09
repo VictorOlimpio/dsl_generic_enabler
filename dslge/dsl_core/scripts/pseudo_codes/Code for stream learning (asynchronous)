@@ -2,32 +2,33 @@ Start when a sample for the sensor’s model is saved in database
 
 n_pre_train = 0
 pre_train_samples = []
-load model from database
+model = model loeaded from database
 
-While n_pre_train < pre_train_size:
-	sample = sample loaded from database
-	insert sample in pre_train_samples
-	n_pre_train = n_pre_train + 1
+if the model is not pre trained:
 
-Pre train the model with the pre_train_samples
+	While n_pre_train < pre_train_size:
+		sample = sample loaded from database
+		insert sample in pre_train_samples
+		n_pre_train = n_pre_train + 1
 
-Update the model in database
+	model.pre_train(pre_train_samples) //Pre train the model with the pre_train_samples
+	model.pre_trained = true
+	Update the model in database
+else:
 
-n_samples_evaluated = 0
+	n_samples_evaluated = 0
 
-While there is new samples in database or the request to stop not received:
+	While there is new samples in database:
 
-	sample = next sample loaded from database
+		sample = sample loaded from database
+		evaluate model in prequential way with the sample
+		n_samples_evaluated = n_samples_evaluated + 1
 
-	evaluate model in prequential way with the sample
-	
-	if n_samples_evaluated > n_samples_to_save then:
-		update the model in database
-		n_samples_evaluated = 0
-	
-	n_samples_evaluated = n_samples_evaluated + 1
-	
-	save predicted value in database
+		if n_samples_evaluated == n_samples_to_save then:
+			update the model in database
+			n_samples_evaluated = 0
+		
+		save predicted value in database
 
 Update model in database
 

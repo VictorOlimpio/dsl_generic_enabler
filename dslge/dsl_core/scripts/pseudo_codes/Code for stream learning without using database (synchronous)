@@ -10,8 +10,8 @@ While there is a notification of the model in database:
 	insert data in sample
 	n_data = n_data + 1
 
-	if n_data > window then: 
-		if model is not pre trained then:
+	if n_data == window then: 
+        if model is not pre trained then:
             insert sample in pre_train_samples
             n_pre_train = n_pre_train + 1
             
@@ -24,13 +24,13 @@ While there is a notification of the model in database:
             n_samples_evaluated = n_samples_evaluated + 1
             
             //Updates the model when a specified number of samples evaluated by the model is reached
-            if n_samples_evaluated > n_samples_to_save then:
+            if n_samples_evaluated == n_samples_to_save then:
                 update the model in database
                 n_samples_evaluated = 0
             
             save predicted value in database
 
-		n_data = 0
-		sample = []
+        n_data = 0
+        sample = []
 		
 	

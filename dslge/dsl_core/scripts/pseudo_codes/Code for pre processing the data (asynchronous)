@@ -7,7 +7,7 @@ While there is a notification of the model in database:
 	insert data in sample
 	n_data = n_data + 1
 
-	if n_data > window then: 
+	if n_data == window then: 
 		save the sample in database		
 		n_data = 0
 		sample = []
