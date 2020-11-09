@@ -15,7 +15,7 @@ While there is a notification of the model in database:
             insert sample in pre_train_samples
             n_pre_train = n_pre_train + 1
             
-            if n_pre_train > pre_train_size then:
+            if n_pre_train == pre_train_size then:
                 model.pre_train(pre_train_samples) //Pre train the model with the pre_train_samples
                 model.pre_trained = true
                 Update the model in database
