@@ -6,9 +6,9 @@ n_pre_train = 0
 model = model loeaded from database
 
 While there is a notification of the model in database:
-	data = measure from notification
-	insert data in sample
-	n_data = n_data + 1
+    data = measure from notification
+    insert data in sample
+    n_data = n_data + 1
 
     if n_data == window then: 
         if model is not pre trained then:
