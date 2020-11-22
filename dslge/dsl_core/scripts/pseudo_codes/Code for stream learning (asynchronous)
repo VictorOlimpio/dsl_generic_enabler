@@ -1,5 +1,5 @@
-Start when a sample for the sensor’s model is saved in database
-
+Start when a sample for the sensor’s model is saved in a list of samples
+samples = list of samples being loeaded from pre processing module
 n_pre_train = 0
 pre_train_samples = []
 model = model loeaded from database
@@ -7,20 +7,19 @@ model = model loeaded from database
 if the model is not pre trained:
 
 	While n_pre_train < pre_train_size:
-		sample = sample loaded from database
+		sample = sample loaded samples
 		insert sample in pre_train_samples
 		n_pre_train = n_pre_train + 1
 
 	model.pre_train(pre_train_samples) //Pre train the model with the pre_train_samples
 	model.pre_trained = true
 	Update the model in database
-else:
 
 	n_samples_evaluated = 0
 
-	While there is new samples in database:
+	While there is a new sample in samples:
 
-		sample = sample loaded from database
+		sample = sample loaded from samples
 		evaluate model in prequential way with the sample
 		n_samples_evaluated = n_samples_evaluated + 1
 
@@ -28,7 +27,22 @@ else:
 			update the model in database
 			n_samples_evaluated = 0
 		
-		save predicted value in database
+		send predicted value to external application
+else:
+
+	n_samples_evaluated = 0
+
+	While there is a new sample in samples:
+
+		sample = sample loaded from samples
+		evaluate model in prequential way with the sample
+		n_samples_evaluated = n_samples_evaluated + 1
+
+		if n_samples_evaluated == n_samples_to_save then:
+			update the model in database
+			n_samples_evaluated = 0
+		
+		send predicted value to external application
 
 Update model in database
 

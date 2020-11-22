@@ -1,15 +1,15 @@
 Start when Orion Broker send a notification and the notification is saved in database
 n_data = 0
 sample = []
+samples = []
 
-While there is a notification of the model in database:
+While there is a notification of the model:
 	data = measure from notification
 	insert data in sample
-	n_data = n_data + 1
+	n_data = size of sample
 
 	if n_data == window then: 
-		save the sample in database		
-		n_data = 0
-		sample = []
+		insert sample in samples		
+		remove first data in sample
 
 	
