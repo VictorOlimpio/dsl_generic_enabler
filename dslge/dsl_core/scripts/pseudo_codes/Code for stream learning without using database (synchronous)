@@ -20,15 +20,6 @@ While there is a notification of the model:
                 model.pre_trained = true
                 Update the model in database
                 
-            evaluate model in prequential way with the sample
-            n_samples_evaluated = n_samples_evaluated + 1
-            
-            //Updates the model when a specified number of samples evaluated by the model is reached
-            if n_samples_evaluated == n_samples_to_save then:
-                update the model in database
-                n_samples_evaluated = 0
-            
-            save predicted value in database
         else:
             evaluate model in prequential way with the sample
             n_samples_evaluated = n_samples_evaluated + 1
