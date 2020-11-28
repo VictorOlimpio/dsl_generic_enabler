@@ -16,10 +16,14 @@ EXTERNAL_BASIC_URL = 'http://localhost:1026'
 BASIC_URL = 'http://localhost:8000/api/'
 
 
-def send_get_request(route):
+def send_get_request(route, headers=None):
     attempt_num = 0  # keep track of how many times we've retried
     while attempt_num < MAX_RETRIES:
-        response = requests.get(EXTERNAL_BASIC_URL + route, timeout=10)
+        if headers:
+            headers = {'Connection': 'Keep-Alive', 'fiware-service': 'openiot', 'fiware-servicepath': '/'} 
+            response = requests.get(EXTERNAL_BASIC_URL + route, headers=headers, timeout=10)
+        else:
+            response = requests.get(EXTERNAL_BASIC_URL + route, timeout=10)
         if response.status_code == status.HTTP_200_OK:
             return response.json(), response
         else:
@@ -56,7 +60,8 @@ def configure(request):
     if not request.method == 'POST':
         return Response({"error": "Method not allowed"}, status=status.HTTP_400_BAD_REQUEST)
     request_data = request.data
-    get_response = send_get_request('/v2/entities/'+request.data['id'])
+    headers = request.headers
+    get_response = send_get_request('/v2/entities/'+request_data['id'], headers)
     if not get_response[1].status_code == status.HTTP_200_OK:
         return Response({"error": "Request failed"}, status=get_response[1].status_code)
     creator = EntityModelCreator(request_data)
@@ -69,6 +74,9 @@ def configure(request):
             else Response({"error": creator.errors}, status=post_response.status_code)
     return Response({"error": "Middleware is not responding."})
 
+@api_view(['POST'])
+def notification(request):
+    return Response(request.data)
 
 def make_subscritption_data(data_info):
     data = {
@@ -81,12 +89,13 @@ def make_subscritption_data(data_info):
                 }
             ],
             "condition": {
-                'attrs': ["measure"]
+                'attrs': ["count"]
             }
         },
         "notification": {
             "http": {
-                "url": "{}".format((BASIC_URL + 'measures/' + data_info['id']))
+                # "url": "{}".format((BASIC_URL + 'measures/' + data_info['id']))
+                "url": "{}".format((BASIC_URL + 'notification/'))
             }
         }
     }
