@@ -13,7 +13,7 @@ from dsl_broker.services.creators.entity_model_creator import EntityModelCreator
 
 MAX_RETRIES = 5
 EXTERNAL_BASIC_URL = 'http://localhost:1026'
-BASIC_URL = 'http://localhost:8000/api/'
+BASIC_URL = 'http://192.168.0.101:8000/api/'
 
 
 def send_get_request(route, headers=None):
@@ -60,13 +60,17 @@ def configure(request):
     if not request.method == 'POST':
         return Response({"error": "Method not allowed"}, status=status.HTTP_400_BAD_REQUEST)
     request_data = request.data
-    headers = request.headers
-    get_response = send_get_request('/v2/entities/'+request_data['id'], headers)
+    metadata = request.data['model']['metadata']
+    headers = request.headers if metadata['iot']['value'] else None
+    if headers:
+        get_response = send_get_request('/v2/entities/'+request_data['id'], headers)
+    else:
+        get_response = send_get_request('/v2/entities/'+request_data['id'])
     if not get_response[1].status_code == status.HTTP_200_OK:
         return Response({"error": "Request failed"}, status=get_response[1].status_code)
     creator = EntityModelCreator(request_data)
     post_response = send_post_request(
-        '/v2/subscriptions/', make_subscritption_data(request_data))
+        '/v2/subscriptions/', make_subscritption_data(get_response[0]))
     if not post_response is None:
         creator.save()
         return Response({"succcess": "Configuration done."}, status=status.HTTP_200_OK) \
@@ -76,7 +80,9 @@ def configure(request):
 
 @api_view(['POST'])
 def notification(request):
-    return Response(request.data)
+    # import ipdb; ipdb.set_trace()
+    print(request.data)
+    return Response(status=200)
 
 def make_subscritption_data(data_info):
     data = {
@@ -89,12 +95,12 @@ def make_subscritption_data(data_info):
                 }
             ],
             "condition": {
-                'attrs': ["count"]
+                "attrs": ["price"]
+                # "expression": {"q": "id=={}".format(data_info['id'])}
             }
         },
         "notification": {
             "http": {
-                # "url": "{}".format((BASIC_URL + 'measures/' + data_info['id']))
                 "url": "{}".format((BASIC_URL + 'notification/'))
             }
         }
